@@ -10,7 +10,7 @@ class MacroView:
     def get_coordinates(self):
         desktop_x = [600, 600, 100, 600, 600, 600, 600, 600, 600]
         # Adjust Y coordinates to make room for the new UI elements
-        desktop_y = [50, 120, 170, 780, 850, 920, 990, 280, 200]
+        desktop_y = [50, 120, 170, 650, 720, 790, 860, 280, 200]
 
         for i in range(len(desktop_x)):
             desktop_x[i] *= 2
@@ -38,16 +38,9 @@ class MacroView:
         self.canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height)
         self.canvas.place(x=_x[2], y=_y[2])
         
-        png_path = os.path.join("resource", "icon.png")
-        if os.path.exists(png_path):
-            try:
-                from PIL import Image, ImageTk
-                img = Image.open(png_path)
-                img = img.resize((canvas_width, canvas_height), Image.Resampling.LANCZOS)
-                self.placeholder_photo = ImageTk.PhotoImage(img)
-                self.canvas.create_image(0, 0, image=self.placeholder_photo, anchor="nw")
-            except Exception:
-                pass
+        self.canvas.create_text(canvas_width // 2, canvas_height // 2, 
+                              text="좌석 영역을 캡처해 주세요 (a -> b)", 
+                              font=("Malgun Gothic", 16, "bold"), fill="gray")
 
         self.button1 = tk.Button(self.root, text="좌석 영역 선택하기", command=self.controller.select_seat_area)
         self.button1.place(x=_x[3], y=_y[3])
@@ -78,7 +71,7 @@ class MacroView:
         self.log_label = tk.Label(self.root, text="실시간 실행 로그", font=("Malgun Gothic", 9, "bold"))
         self.log_label.place(x=_x[8], y=_y[7] + 120)
 
-        self.log_text = tk.Text(self.root, width=45, height=18, font=("Consolas", 9))
+        self.log_text = tk.Text(self.root, width=45, height=12, font=("Consolas", 9))
         self.log_text.place(x=_x[8], y=_y[7] + 145)
 
     def log(self, message):
