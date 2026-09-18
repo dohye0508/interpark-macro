@@ -53,6 +53,21 @@ class MacroView:
         self.color_canvas = tk.Canvas(self.root, width=140, height=60, bg="white", highlightthickness=1, highlightbackground="gray")
         self.color_canvas.place(x=_x[8], y=_y[8])
 
+        self.log_label = tk.Label(self.root, text="실시간 실행 로그", font=("Malgun Gothic", 9, "bold"))
+        self.log_label.place(x=_x[8], y=_y[8] + 75)
+
+        self.log_text = tk.Text(self.root, width=45, height=22, font=("Consolas", 9))
+        self.log_text.place(x=_x[8], y=_y[8] + 100)
+
+    def log(self, message):
+        from datetime import datetime
+        now = datetime.now().strftime("[%H:%M:%S] ")
+        full_msg = now + str(message) + "\n"
+        print(full_msg, end="")
+        if hasattr(self, 'log_text'):
+            self.log_text.insert(tk.END, full_msg)
+            self.log_text.see(tk.END)
+
     def capture_region(self, left_top, right_bottom):
         captured_image = ImageGrab.grab(bbox=(left_top[0], left_top[1], right_bottom[0], right_bottom[1]))
         captured_image = captured_image.resize((800, 800))
@@ -86,9 +101,9 @@ class MacroView:
         
         self.color_canvas.create_rectangle(0, 0, 140, 60, fill=color_hex, outline="black", width=2)
         
-        # Calculate brightness to pick contrasting text color
         brightness = (r * 299 + g * 587 + b * 114) / 1000
         text_color = "white" if brightness < 128 else "black"
         
         self.color_canvas.create_text(70, 20, text=f"RGB: ({r}, {g}, {b})", fill=text_color, font=("Malgun Gothic", 9, "bold"))
-        self.color_canvas.create_text(70, 40, text=f"HEX: {color_hex}", fill=text_color, font=("Malgun Gothic", 9))
+        self.color_canvas.create_text(70, 40, text=f"HEX: {color_hex}", fill=text_color, font=("Malgun Gothic", 9))
+

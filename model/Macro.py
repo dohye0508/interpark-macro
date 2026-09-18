@@ -7,7 +7,7 @@ from datetime import datetime
 from model import MusicPlayer
 
 class Macro:
-    def __init__(self, need_seat_cnt, offset, alarm):
+    def __init__(self, need_seat_cnt, offset, alarm, logger=None):
         self.is_running = False
         self.running_cnt = 1 # 매크로 실행 카운트
 
@@ -21,26 +21,37 @@ class Macro:
         
         self.music_player = MusicPlayer.MusicPlayer()
         self.alarm = alarm
+        self.logger = logger
+
+    def log(self, msg):
+        if self.logger:
+            self.logger(msg)
+        else:
+            print(msg)
 
     def start_macro(self):
         if not self.is_running:
             self.is_running = True
+            self.log("🚀 매크로 동작 시작!")
             threading.Thread(target=self.run_macro_loop).start()
 
     def stop_macro(self):
-        self.is_running = False
-        self.music_player.stop_music()
+        if self.is_running:
+            self.is_running = False
+            self.log("⏹️ 매크로 정지됨.")
+            self.music_player.stop_music()
 
     def run_macro_loop(self):
         while self.is_running:
             try:
                 self.perform_macro_actions()
             except Exception as e:
-                print(f"Macro error: {e}")
+                self.log(f"❌ Macro error: {e}")
                 self.is_running = False
 
     def perform_macro_actions(self):
-        print(f"Running macro iteration: {self.running_cnt}...")
+        if self.running_cnt % 5 == 1 or self.running_cnt == 1:
+            self.log(f"🔄 매크로 탐색 중... ({self.running_cnt}회차)")
         self.click_refresh()
         self.search_seat()
 
@@ -68,7 +79,7 @@ class Macro:
 
     def print_success_time(self):
         current_time = datetime.now().strftime("%Y년 %m월 %d일 %p %I:%M")
-        print(f"취켓팅 성공 시간: {current_time}")
+        self.log(f"🎉 취켓팅 성공 시간: {current_time}")
     
     def complete_reservation(self, x, y):
         self.print_success_time()
@@ -77,6 +88,7 @@ class Macro:
         self.is_running = False
         if self.alarm:
             self.music_player.play_music()
+
 
     def is_color_match(self, rgb, target_colors, delta_error=10):
         for r, g, b in target_colors:
