@@ -4,6 +4,8 @@ import time
 from PIL import ImageGrab
 from model.Macro import Macro
 
+pyautogui.FAILSAFE = False
+
 class MacroController:
     def __init__(self, need_seat_cnt, offset, alarm, view=None):
         self.view = view

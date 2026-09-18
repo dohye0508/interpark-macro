@@ -6,6 +6,9 @@ from PIL import ImageGrab
 from datetime import datetime
 from model import MusicPlayer
 
+# 마우스가 화면 구석(0,0)으로 가더라도 매크로가 튕기지 않도록 FailSafe 비활성화
+pyautogui.FAILSAFE = False
+
 class Macro:
     def __init__(self, need_seat_cnt, offset, alarm, logger=None, view=None):
         self.is_running = False
