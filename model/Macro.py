@@ -7,7 +7,7 @@ from datetime import datetime
 from model import MusicPlayer
 
 class Macro:
-    def __init__(self, need_seat_cnt, offset, alarm, logger=None):
+    def __init__(self, need_seat_cnt, offset, alarm, logger=None, view=None):
         self.is_running = False
         self.running_cnt = 1 # 매크로 실행 카운트
 
@@ -22,6 +22,7 @@ class Macro:
         self.music_player = MusicPlayer.MusicPlayer()
         self.alarm = alarm
         self.logger = logger
+        self.view = view
 
     def log(self, msg):
         if self.logger:
@@ -86,6 +87,8 @@ class Macro:
         self.click_seat(x, y)
         self.click_pay()
         self.is_running = False
+        if self.view and hasattr(self.view, 'set_success_background'):
+            self.view.set_success_background()
         if self.alarm:
             self.music_player.play_music()
 

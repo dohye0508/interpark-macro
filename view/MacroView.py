@@ -26,12 +26,17 @@ class MacroView:
             except Exception:
                 pass
                 
+        self.default_bg = self.root.cget("bg")
+
         _x, _y = self.get_coordinates()
         self.play_button = tk.Button(self.root, text="매크로 시작", command=self.controller.start_macro)
         self.play_button.place(x=_x[0], y=_y[0])
         
         self.pause_button = tk.Button(self.root, text="매크로 중지", command=self.controller.stop_macro)
         self.pause_button.place(x=_x[1], y=_y[1])
+
+        self.reset_bg_button = tk.Button(self.root, text="배경화면 효과 해제", command=self.reset_background, bg="#e74c3c", fg="white", font=("Malgun Gothic", 9, "bold"))
+        self.reset_bg_button.place(x=_x[1] + 120, y=_y[1])
 
         canvas_width = 1000
         canvas_height = 1000
@@ -73,6 +78,27 @@ class MacroView:
 
         self.log_text = tk.Text(self.root, width=45, height=12, font=("Consolas", 9))
         self.log_text.place(x=_x[8], y=_y[7] + 145)
+
+    def set_success_background(self):
+        success_green = "#2ecc71"
+        self.root.config(bg=success_green)
+        for label in [self.color_delete_label, self.color_label, self.log_label]:
+            try:
+                label.config(bg=success_green, fg="white")
+            except Exception:
+                pass
+        self.log("🎉 성공 화면 효과(초록색 배경)가 적용되었습니다!")
+
+    def reset_background(self):
+        self.root.config(bg=self.default_bg)
+        for label in [self.color_delete_label, self.color_label, self.log_label]:
+            try:
+                label.config(bg=self.default_bg, fg="black")
+            except Exception:
+                pass
+        if hasattr(self.controller, 'macro') and hasattr(self.controller.macro, 'music_player'):
+            self.controller.macro.music_player.stop_music()
+        self.log("🔄 배경화면 효과가 해제되었습니다.")
 
     def log(self, message):
         from datetime import datetime

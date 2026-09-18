@@ -9,7 +9,7 @@ NEED_SEAT_CNT = 1
 OFFSET = 20
 
 # 취켓팅 성공 후 알람 유무
-ALARM = False
+ALARM = True
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -19,6 +19,6 @@ if __name__ == "__main__":
     # 컨트롤러와 뷰 생성 및 연결
     controller = MacroController(NEED_SEAT_CNT, OFFSET, ALARM, None)
     view = MacroView(root, controller)
-    controller.view = view
+    controller.set_view(view)
 
     root.mainloop()

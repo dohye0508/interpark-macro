@@ -7,8 +7,12 @@ from model.Macro import Macro
 class MacroController:
     def __init__(self, need_seat_cnt, offset, alarm, view=None):
         self.view = view
-        self.macro = Macro(need_seat_cnt, offset, alarm, logger=self.log)
+        self.macro = Macro(need_seat_cnt, offset, alarm, logger=self.log, view=view)
         keyboard.add_hotkey(';', self.stop_macro)
+
+    def set_view(self, view):
+        self.view = view
+        self.macro.view = view
 
     def log(self, msg):
         if self.view and hasattr(self.view, 'log'):
