@@ -10,7 +10,7 @@ class MacroView:
     def get_coordinates(self):
         desktop_x = [600, 600, 100, 600, 600, 600, 600, 600, 600]
         # Adjust Y coordinates to make room for the new UI elements
-        desktop_y = [50, 120, 170, 740, 810, 880, 950, 280, 200]
+        desktop_y = [50, 120, 170, 780, 850, 920, 990, 280, 200]
 
         for i in range(len(desktop_x)):
             desktop_x[i] *= 2
@@ -18,6 +18,14 @@ class MacroView:
         return desktop_x, desktop_y
 
     def setup_ui(self):
+        import os
+        icon_path = os.path.join("resource", "icon.ico")
+        if os.path.exists(icon_path):
+            try:
+                self.root.iconbitmap(icon_path)
+            except Exception:
+                pass
+                
         _x, _y = self.get_coordinates()
         self.play_button = tk.Button(self.root, text="매크로 시작", command=self.controller.start_macro)
         self.play_button.place(x=_x[0], y=_y[0])
@@ -29,6 +37,17 @@ class MacroView:
         canvas_height = 1000
         self.canvas = tk.Canvas(self.root, width=canvas_width, height=canvas_height)
         self.canvas.place(x=_x[2], y=_y[2])
+        
+        png_path = os.path.join("resource", "icon.png")
+        if os.path.exists(png_path):
+            try:
+                from PIL import Image, ImageTk
+                img = Image.open(png_path)
+                img = img.resize((canvas_width, canvas_height), Image.Resampling.LANCZOS)
+                self.placeholder_photo = ImageTk.PhotoImage(img)
+                self.canvas.create_image(0, 0, image=self.placeholder_photo, anchor="nw")
+            except Exception:
+                pass
 
         self.button1 = tk.Button(self.root, text="좌석 영역 선택하기", command=self.controller.select_seat_area)
         self.button1.place(x=_x[3], y=_y[3])
