@@ -43,13 +43,15 @@ class MacroView:
         self.button4 = tk.Button(self.root, text="좌석 선택 완료 좌표 가져오기", command=self.controller.select_complete_axis)
         self.button4.place(x=_x[6], y=_y[6])
 
-        self.color_listbox = tk.Listbox(self.root)
+        self.color_listbox = tk.Listbox(self.root, height=8, width=20)
         self.color_listbox.place(x=_x[7], y=_y[7])
         self.color_listbox.bind("<ButtonRelease-1>", self.controller.on_listbox_click)
 
-        self.color_canvas = tk.Canvas(self.root, width=50, height=30, bg="white")
-        self.color_canvas.place(x=_x[8], y=_y[8])
+        self.color_label = tk.Label(self.root, text="선택 색상 미리보기", font=("Malgun Gothic", 9, "bold"))
+        self.color_label.place(x=_x[8], y=_y[8] - 25)
 
+        self.color_canvas = tk.Canvas(self.root, width=140, height=60, bg="white", highlightthickness=1, highlightbackground="gray")
+        self.color_canvas.place(x=_x[8], y=_y[8])
 
     def capture_region(self, left_top, right_bottom):
         captured_image = ImageGrab.grab(bbox=(left_top[0], left_top[1], right_bottom[0], right_bottom[1]))
@@ -63,9 +65,30 @@ class MacroView:
     def update_listbox(self, seat_class):
         self.color_listbox.delete(0, tk.END)
         for color in seat_class:
-            self.color_listbox.insert(tk.END, color)
+            self.color_listbox.insert(tk.END, str(color))
+        if seat_class:
+            latest_color = list(seat_class)[-1]
+            self.draw_color_rectangle(latest_color)
 
     def draw_color_rectangle(self, rgb_values):
         self.color_canvas.delete("all")
-        color_hex = "#{:02X}{:02X}{:02X}".format(rgb_values[0], rgb_values[1], rgb_values[2])
-        self.color_canvas.create_rectangle(0, 0, 50, 50, fill=color_hex)
+        if isinstance(rgb_values, str):
+            try:
+                rgb_values = eval(rgb_values)
+            except Exception:
+                return
+
+        if not isinstance(rgb_values, (tuple, list)) or len(rgb_values) < 3:
+            return
+
+        r, g, b = rgb_values[0], rgb_values[1], rgb_values[2]
+        color_hex = "#{:02X}{:02X}{:02X}".format(r, g, b)
+        
+        self.color_canvas.create_rectangle(0, 0, 140, 60, fill=color_hex, outline="black", width=2)
+        
+        # Calculate brightness to pick contrasting text color
+        brightness = (r * 299 + g * 587 + b * 114) / 1000
+        text_color = "white" if brightness < 128 else "black"
+        
+        self.color_canvas.create_text(70, 20, text=f"RGB: ({r}, {g}, {b})", fill=text_color, font=("Malgun Gothic", 9, "bold"))
+        self.color_canvas.create_text(70, 40, text=f"HEX: {color_hex}", fill=text_color, font=("Malgun Gothic", 9))
