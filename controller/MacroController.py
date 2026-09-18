@@ -17,6 +17,19 @@ class MacroController:
             print(msg)
 
     def start_macro(self):
+        if not self.macro.seat_axis or len(self.macro.seat_axis) < 2:
+            self.log("❌ 매크로 실행 실패: '좌석 영역'이 설정되지 않았습니다.")
+            return
+        if not self.macro.seat_class:
+            self.log("❌ 매크로 실행 실패: '좌석 등급(색상)'이 설정되지 않았습니다.")
+            return
+        if not self.macro.refresh_axis:
+            self.log("❌ 매크로 실행 실패: '새로고침' 좌표가 설정되지 않았습니다.")
+            return
+        if not self.macro.pay_axis:
+            self.log("❌ 매크로 실행 실패: '좌석 선택 완료' 좌표가 설정되지 않았습니다.")
+            return
+            
         self.macro.start_macro()
 
     def stop_macro(self):
@@ -44,7 +57,8 @@ class MacroController:
                 rgb = screen.getpixel((x, y))
                 self.log(f"🎨 색상 등록됨: {rgb}")
                 my_class_list.append(rgb)
-                self.view.update_listbox(set(my_class_list))
+                self.macro.seat_class = set(my_class_list)
+                self.view.update_listbox(self.macro.seat_class)
                 self.view.draw_color_rectangle(rgb)
                 
                 while keyboard.is_pressed('a'):
@@ -53,8 +67,6 @@ class MacroController:
                     time.sleep(0.01)
 
             if keyboard.is_pressed('c'):
-                self.macro.seat_class = set(my_class_list)
-                self.view.update_listbox(self.macro.seat_class)
                 self.log("✅ 좌석 등급 선택 완료!")
                 
                 while keyboard.is_pressed('c'):
@@ -81,6 +93,19 @@ class MacroController:
         if selected_index:
             selected_color = self.view.color_listbox.get(selected_index)
             self.view.draw_color_rectangle(selected_color)
+
+    def on_listbox_double_click(self, event):
+        selected_index = self.view.color_listbox.curselection()
+        if selected_index:
+            selected_color_str = self.view.color_listbox.get(selected_index)
+            try:
+                color_tuple = eval(selected_color_str)
+                if color_tuple in self.macro.seat_class:
+                    self.macro.seat_class.remove(color_tuple)
+                    self.view.update_listbox(self.macro.seat_class)
+                    self.log(f"🗑️ 색상 삭제됨: {color_tuple}")
+            except Exception as e:
+                pass
 
     def _wait_for_key(self, key):
         while keyboard.is_pressed(key):

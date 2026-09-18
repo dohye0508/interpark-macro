@@ -10,7 +10,7 @@ class MacroView:
     def get_coordinates(self):
         desktop_x = [600, 600, 100, 600, 600, 600, 600, 600, 600]
         # Adjust Y coordinates to make room for the new UI elements
-        desktop_y = [50, 120, 170, 700, 770, 840, 910, 250, 200]
+        desktop_y = [50, 120, 170, 740, 810, 880, 950, 280, 200]
 
         for i in range(len(desktop_x)):
             desktop_x[i] *= 2
@@ -45,6 +45,10 @@ class MacroView:
         self.color_listbox = tk.Listbox(self.root, height=5, width=20)
         self.color_listbox.place(x=_x[7], y=_y[7])
         self.color_listbox.bind("<ButtonRelease-1>", self.controller.on_listbox_click)
+        self.color_listbox.bind("<Double-Button-1>", self.controller.on_listbox_double_click)
+
+        self.color_delete_label = tk.Label(self.root, text="(항목 더블클릭 시 삭제)", font=("Malgun Gothic", 8))
+        self.color_delete_label.place(x=_x[7], y=_y[7] + 90)
 
         self.color_label = tk.Label(self.root, text="선택 색상 미리보기", font=("Malgun Gothic", 9, "bold"))
         self.color_label.place(x=_x[8], y=_y[8] - 25)
@@ -53,10 +57,10 @@ class MacroView:
         self.color_canvas.place(x=_x[8], y=_y[8])
 
         self.log_label = tk.Label(self.root, text="실시간 실행 로그", font=("Malgun Gothic", 9, "bold"))
-        self.log_label.place(x=_x[8], y=_y[8] + 130)
+        self.log_label.place(x=_x[8], y=_y[7] + 120)
 
         self.log_text = tk.Text(self.root, width=45, height=18, font=("Consolas", 9))
-        self.log_text.place(x=_x[8], y=_y[8] + 155)
+        self.log_text.place(x=_x[8], y=_y[7] + 145)
 
     def log(self, message):
         from datetime import datetime
