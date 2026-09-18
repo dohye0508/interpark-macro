@@ -9,12 +9,11 @@ class MacroView:
 
     def get_coordinates(self):
         desktop_x = [600, 600, 100, 600, 600, 600, 600, 600, 600]
-        desktop_y = [50, 80, 100, 360, 420, 450, 480, 180, 130]
+        # Adjust Y coordinates to make room for the new UI elements
+        desktop_y = [50, 120, 170, 700, 770, 840, 910, 250, 200]
 
         for i in range(len(desktop_x)):
             desktop_x[i] *= 2
-
-        desktop_y = [50, 120, 170, 590, 660, 730, 800, 250, 200]
 
         return desktop_x, desktop_y
 
@@ -43,7 +42,7 @@ class MacroView:
         self.button4 = tk.Button(self.root, text="좌석 선택 완료 좌표 가져오기", command=self.controller.select_complete_axis)
         self.button4.place(x=_x[6], y=_y[6])
 
-        self.color_listbox = tk.Listbox(self.root, height=8, width=20)
+        self.color_listbox = tk.Listbox(self.root, height=5, width=20)
         self.color_listbox.place(x=_x[7], y=_y[7])
         self.color_listbox.bind("<ButtonRelease-1>", self.controller.on_listbox_click)
 
@@ -54,10 +53,10 @@ class MacroView:
         self.color_canvas.place(x=_x[8], y=_y[8])
 
         self.log_label = tk.Label(self.root, text="실시간 실행 로그", font=("Malgun Gothic", 9, "bold"))
-        self.log_label.place(x=_x[8], y=_y[8] + 75)
+        self.log_label.place(x=_x[8], y=_y[8] + 130)
 
-        self.log_text = tk.Text(self.root, width=45, height=22, font=("Consolas", 9))
-        self.log_text.place(x=_x[8], y=_y[8] + 100)
+        self.log_text = tk.Text(self.root, width=45, height=18, font=("Consolas", 9))
+        self.log_text.place(x=_x[8], y=_y[8] + 155)
 
     def log(self, message):
         from datetime import datetime
