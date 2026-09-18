@@ -13,7 +13,7 @@ ALARM = False
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title("please win this war..")
+    root.title("취켓팅 매크로 프로그램")
     root.geometry("1600x1200")
 
     # 컨트롤러와 뷰 생성 및 연결
